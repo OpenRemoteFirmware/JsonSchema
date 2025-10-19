@@ -1,0 +1,128 @@
+{
+    "$schema": "https://json-schema.org/draft-07/schema",
+    "$id": "https://example.com/product.schema.json",
+    "title": "OpenRemote Device schema",
+    "description": "JSON schema for a device that can be controlled by the OpenRemote system.",
+    "type": "object",
+    "$defs": {
+        "uuid": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        },
+        "irCommand": {
+            "type": "object",
+            
+            "oneOf": [
+                {
+                    "properties": {
+                        "type": {
+                            "const": "NEC"
+                        },
+                        "code": {
+                            "type": "Number"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "type": {
+                            "const": "NEC2"
+                        },
+                        "code": {
+                            "type": "Number"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "type": {
+                            "const": "PRONTO"
+                        },
+                        "code": {
+                            "type": "string",
+                            "pattern": "^[0-9A-F ]+$"
+                        }
+                    }
+                }
+            ],
+
+            "required": [
+                "type",
+                "code"
+            ]
+        }
+    },
+    "properties": {
+        "id": {
+            "description": "The unique identifier for this device. This is used to identify the device within the OpenRemote system.",
+            "$ref": "#/$defs/uuid"
+        },
+        "parent": {
+            "description": "The unique identifier for the parent device of this device, if applicable.",
+            "$ref": "#/$defs/uuid"
+        },
+        "name": {
+            "description": "Human readable name for this device.",
+            "examples": [
+                "Sony 55in OLED TV"
+            ],
+            "type": "string"
+        },
+        "description": {
+            "description": "A more detailed description of this device and it's purpose.",
+            "examples": [
+                "Base device file for all Sony Google TVs"
+            ],
+            "type": "string"
+        },
+        "model": {
+            "description": "Vendor model for this device.",
+            "examples": [
+                "KD-55A8H"
+            ],
+            "type": "string"
+        },
+        "vendor": {
+            "description": "Vendor/Manufacturer for this device.",
+            "examples": [
+                "Sony"
+            ],
+            "type": "string"
+        },
+        "deviceCategory": {
+            "description": "The type of device, e.g., TV, Light, Thermostat.",
+            "enum": [
+                "Display",
+                "Audio",
+                "SmartDevice",
+                "Sensor",
+                "Player",
+                "Light",
+                "Other"
+            ]
+        },
+        "actions": {
+            "type": "array",
+            "description": "A list of actions that can be performed on this device.",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "The name of the action.",
+                        "pattern": "^[0-9A-Z_]*$"
+                    },
+                    "irCommand": {
+                        "description": "The IR command associated with this action, if applicable.",
+                        "$ref": "#/$defs/irCommand"
+                    }
+                }
+            }
+        }
+    },
+    "required": [
+        "id",
+        "name",
+        "deviceCategory"
+    ]
+}

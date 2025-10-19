@@ -1,0 +1,25 @@
+{
+  "$schema": "../DeviceSchema.json",
+  "id": "123e4567-e89b-12d3-a456-426614174000",
+  "name": "Living Room TV",
+  "description": "Main television in the living room.",
+  "model": "XBR-55A8H",
+  "vendor": "Sony",
+  "deviceCategory": "Display",
+  "actions": [
+    {
+      "name": "POWER_ON",
+      "irCommand": {
+        "type": "NEC",
+        "code": 6
+      }
+    },
+    {
+      "name": "POWER_OFF",
+      "irCommand": {
+        "type": "PRONTO",
+        "code": "0000 006D 0022 0002 0155 00AC"
+      }
+    }
+  ]
+}
