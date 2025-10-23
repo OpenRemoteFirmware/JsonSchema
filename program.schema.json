@@ -1,0 +1,94 @@
+{
+    "$schema": "https://json-schema.org/draft-07/schema",
+    "$id": "OpenRemoteFirmware/program.schema.json",
+    "title": "OpenRemote Program Schema",
+    "description": "JSON schema for a program file used by the OpenRemote system.",
+    "type": "object",
+    "$defs": {
+        "string_id":{
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_]+$",
+            "description": "A string identifier.",
+            "examples": [
+                "device123",
+                "room456"
+            ]
+        },
+
+        "device": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "The name assigned to the device.",
+                    "examples": [
+                        "TV",
+                        "Soundbar"
+                    ]
+                },
+                "id": {
+                    "$ref": "#/$defs/string_id",
+                    "description": "The string identifier for the device."
+                },
+                "deviceId": {
+                    "$ref": "shared.schema.json#uuid",
+                    "description": "The unique identifier for the device."
+                },
+                "file": {
+                    "type": "string",
+                    "description": "An optional absolute or relative file path to the device configuration.",
+                    "examples": [
+                        "/path/to/device/config.json"
+                    ]
+                }
+            },
+            "required": ["name", "id", "deviceId"]
+        },
+        
+        "room": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "The name of the room.",
+                    "examples": [
+                        "Living Room",
+                        "Kitchen"
+                    ]
+                },
+                "devices": {
+                    "type": "array",
+                    "description": "An array of devices located in the room.",
+                    "items": {
+                        "$ref": "#/$defs/device"
+                    }
+                }
+            }
+        }
+    },
+    "properties": {
+        "projectName": {
+            "description": "The name of this project.",
+            "type": "string",
+            "examples": [
+                "MY house",
+                "John's summer house"
+            ]
+        },
+
+        "version": {
+            "description": "The version of the program being used.",
+            "type": "integer",
+            "examples": [
+                1
+            ]
+        },
+        "rooms": {
+            "description": "An array of room objects within the project.",
+            "type": "array",
+            "items": {
+                "$ref": "#/$defs/room"
+            }
+        }
+    }
+}

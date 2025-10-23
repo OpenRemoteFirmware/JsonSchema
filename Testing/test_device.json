@@ -1,5 +1,5 @@
 {
-  "$schema": "../DeviceSchema.json",
+  "$schema": "../device.schema.json",
   "id": "123e4567-e89b-12d3-a456-426614174000",
   "name": "Living Room TV",
   "description": "Main television in the living room.",
@@ -10,8 +10,8 @@
     {
       "name": "POWER_ON",
       "irCommand": {
-        "type": "NEC",
-        "code": 6
+        "type": "NEC2",
+        "code": 66
       }
     },
     {
