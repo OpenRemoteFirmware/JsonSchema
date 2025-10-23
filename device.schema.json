@@ -11,41 +11,25 @@
         },
         "irCommand": {
             "type": "object",
-            
+            "description": "Defines an IR command that can be transmitted",
             "oneOf": [
                 {
                     "properties": {
-                        "type": {
-                            "const": "NEC"
-                        },
-                        "code": {
-                            "type": "Number"
+                        "NEC": {
+                            "type": "string",
+                            "pattern": "^[0-9A-F]+$"
                         }
                     }
                 },
                 {
                     "properties": {
-                        "type": {
-                            "const": "NEC2"
-                        },
-                        "code": {
-                            "type": "Number"
-                        }
-                    }
-                },
-                {
-                    "properties": {
-                        "type": {
-                            "const": "PRONTO"
-                        },
-                        "code": {
+                        "PRONTO": {
                             "type": "string",
                             "pattern": "^[0-9A-F ]+$"
                         }
                     }
                 }
             ],
-
             "required": [
                 "type",
                 "code"
@@ -92,8 +76,10 @@
         "deviceCategory": {
             "description": "The type of device, e.g., TV, Light, Thermostat.",
             "enum": [
+                "Base",
                 "Display",
                 "Audio",
+                "Receiver",
                 "SmartDevice",
                 "Sensor",
                 "Player",
@@ -102,27 +88,50 @@
             ]
         },
         "actions": {
-            "type": "array",
+            "type": "object",
             "description": "A list of actions that can be performed on this device.",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "type": "string",
-                        "description": "The name of the action.",
-                        "pattern": "^[0-9A-Z_]*$"
+            "patternProperties": {
+                "^[A-Z][A-Z0-9_]+$": {
+                    "type": "object",
+                    "oneOf": [
+                        {
+                            "required": [
+                                "NEC"
+                            ]
+                        },
+                        {
+                            "required": [
+                                "NEC2"
+                            ]
+                        },
+                        {
+                            "required": [
+                                "PRONTO"
+                            ]
+                        }
+                    ],
+                    "properties": {
+                        "NEC": {
+                            "type": "string",
+                            "pattern": "^0x[0-9A-F]+$"
+                        },
+                        "NEC2": {
+                            "type": "string",
+                            "pattern": "^0x[0-9A-F]+$"
+                        },
+                        "PRONTO": {
+                            "type": "string",
+                            "pattern": "^([0-9A-Fa-f]{4}\\s?){6,}$"
+                        }
                     },
-                    "irCommand": {
-                        "description": "The IR command associated with this action, if applicable.",
-                        "$ref": "#/$defs/irCommand"
-                    }
+                    "required": []
                 }
-            }
+            },
+            "additionalProperties": false
         }
     },
     "required": [
         "id",
-        "name",
-        "deviceCategory"
+        "name"
     ]
 }
