@@ -5,16 +5,16 @@
     "description": "JSON schema for a program file used by the OpenRemote system.",
     "type": "object",
     "$defs": {
-        "string_id":{
+        "string_id": {
+            "$comment": "this is used to identify devices and controlls across the program.",
             "type": "string",
             "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_]+$",
             "description": "A string identifier.",
             "examples": [
                 "device123",
-                "room456"
+                "Room_456"
             ]
         },
-
         "device": {
             "type": "object",
             "properties": {
@@ -25,10 +25,6 @@
                         "TV",
                         "Soundbar"
                     ]
-                },
-                "id": {
-                    "$ref": "#/$defs/string_id",
-                    "description": "The string identifier for the device."
                 },
                 "deviceId": {
                     "$ref": "shared.schema.json#uuid",
@@ -42,29 +38,70 @@
                     ]
                 }
             },
-            "required": ["name", "id", "deviceId"]
+            "required": [
+                "name",
+                "deviceId"
+            ]
         },
-        
-        "room": {
+        "devices": {
+            "type": "object",
+            "patternProperties": {
+                "^[a-zA-Z0-9][a-zA-Z0-9_]+$": {
+                    "$ref": "#/$defs/device"
+                }
+            }
+        },
+        "controller": {
             "type": "object",
             "properties": {
                 "name": {
                     "type": "string",
-                    "description": "The name of the room.",
+                    "description": "The name assigned to the controller.",
                     "examples": [
-                        "Living Room",
-                        "Kitchen"
+                        "Main Controller",
+                        "Secondary Controller"
                     ]
                 },
-                "devices": {
-                    "type": "array",
-                    "description": "An array of devices located in the room.",
-                    "items": {
-                        "$ref": "#/$defs/device"
-                    }
+                "deviceId": {
+                    "$ref": "shared.schema.json#uuid",
+                    "description": "The unique identifier for the controller device."
+                },
+                "file": {
+                    "type": "string",
+                    "description": "An optional absolute or relative file path to the controller configuration.",
+                    "examples": [
+                        "/path/to/controller/config.json"
+                    ]
+                }
+            },
+            "required": [
+                "name",
+                "deviceId"
+            ]
+        },
+        "controllers": {
+            "type": "object",
+            "patternProperties": {
+                "^[a-zA-Z0-9][a-zA-Z0-9_]+$": {
+                    "$ref": "#/$defs/device"
                 }
             }
-        }
+        },
+        "room": {
+            "type": "object",
+            "properties": {
+                "devices": {
+                    "$ref": "#/$defs/devices"
+                },
+                "controllers": {
+                    "$ref": "#/$defs/controllers"
+                }
+            }
+        },
+        "required": [
+            "devices",
+            "controllers"
+        ]
     },
     "properties": {
         "projectName": {
@@ -75,19 +112,23 @@
                 "John's summer house"
             ]
         },
-
         "version": {
             "description": "The version of the program being used.",
             "type": "integer",
+            "minimum": 1,
+            "$comment": "Increment this when the next version comes out.",
+            "maximum": 2,
             "examples": [
                 1
             ]
         },
         "rooms": {
             "description": "An array of room objects within the project.",
-            "type": "array",
-            "items": {
-                "$ref": "#/$defs/room"
+            "type": "object",
+            "patternProperties": {
+                "^[A-Z][A-Z0-9_]+$": {
+                    "$ref": "#/$defs/room"
+                }
             }
         }
     }
