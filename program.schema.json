@@ -15,6 +15,55 @@
                 "Room_456"
             ]
         },
+        "programs": {
+            "type": "object",
+            "patternProperties": {
+                "^[a-zA-Z0-9][a-zA-Z0-9_]+$": {
+                    "type": "object",
+                    "description": "A program assigned to this controller.",
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "description": "The name of the program.",
+                            "examples": [
+                                "Power on",
+                                "Volume up"
+                            ]
+                        },
+                        "code": {
+                            "type": "string",
+                            "description": "The code this program contains."
+                        }
+                    },
+                    "required": [
+                        "code"
+                    ],
+                    "additionalProperties": false
+                }
+            },
+            "additionalProperties": false
+        },
+        "deviceDefLink": {
+            "$comment": "This allows either a straight up GUID to be used, or optionally a file pointer hint, and GUID.",
+            "type": [
+                "string",
+                "object"
+            ],
+            "description": "Either a string identifier or a full device definition object.",
+            "$ref": "shared.schema.json#uuidRegex",
+            "properties": {
+                "uuid": {
+                    "$ref": "shared.schema.json#uuid"
+                },
+                "file": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "uuid",
+                "file"
+            ]
+        },
         "device": {
             "type": "object",
             "properties": {
@@ -27,7 +76,7 @@
                     ]
                 },
                 "deviceId": {
-                    "$ref": "shared.schema.json#uuid",
+                    "$ref": "#/$defs/deviceDefLink",
                     "description": "The unique identifier for the device."
                 },
                 "file": {
@@ -49,34 +98,34 @@
                 "^[a-zA-Z0-9][a-zA-Z0-9_]+$": {
                     "$ref": "#/$defs/device"
                 }
-            }
+            },
+            "additionalProperties": false
         },
         "controller": {
+            "$comment": "This is the schema that defines a device responsible for controlling other devices in the room.",
             "type": "object",
             "properties": {
                 "name": {
                     "type": "string",
-                    "description": "The name assigned to the controller.",
+                    "description": "The name (usually human readable) assigned to the controller.",
                     "examples": [
                         "Main Controller",
                         "Secondary Controller"
                     ]
                 },
                 "deviceId": {
-                    "$ref": "shared.schema.json#uuid",
-                    "description": "The unique identifier for the controller device."
+                    "$ref": "#/$defs/deviceDefLink",
+                    "description": "The unique identifier for the device."
                 },
-                "file": {
-                    "type": "string",
-                    "description": "An optional absolute or relative file path to the controller configuration.",
-                    "examples": [
-                        "/path/to/controller/config.json"
-                    ]
-                }
+                "required": [
+                    "name",
+                    "deviceId"
+                ],
+                "additionalProperties": false
             },
             "required": [
-                "name",
-                "deviceId"
+                "devices",
+                "controllers"
             ]
         },
         "controllers": {
@@ -85,7 +134,8 @@
                 "^[a-zA-Z0-9][a-zA-Z0-9_]+$": {
                     "$ref": "#/$defs/device"
                 }
-            }
+            },
+            "additionalProperties": false
         },
         "room": {
             "type": "object",
@@ -95,13 +145,13 @@
                 },
                 "controllers": {
                     "$ref": "#/$defs/controllers"
+                },
+                "programs": {
+                    "$ref": "#/$defs/programs"
                 }
-            }
-        },
-        "required": [
-            "devices",
-            "controllers"
-        ]
+            },
+            "additionalProperties": false
+        }
     },
     "properties": {
         "projectName": {
@@ -126,10 +176,11 @@
             "description": "An array of room objects within the project.",
             "type": "object",
             "patternProperties": {
-                "^[A-Z][A-Z0-9_]+$": {
+                "^[A-Za-z][A-Za-z0-9_]+$": {
                     "$ref": "#/$defs/room"
                 }
-            }
+            },
+            "additionalProperties": false
         }
     }
 }

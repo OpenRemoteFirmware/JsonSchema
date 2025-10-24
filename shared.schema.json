@@ -1,14 +1,17 @@
 {
-"$schema": "https://json-schema.org/draft-07/schema",
+    "$schema": "https://json-schema.org/draft-07/schema",
     "$id": "https://example.com/product.schema.json",
     "title": "OpenRemote shared json schema",
     "description": "JSON schema for a device that can be controlled by the OpenRemote system.",
-
     "$defs": {
+        "uuidRegex": {
+            "$anchor": "uuidRegex",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        },
         "uuid": {
             "$anchor": "uuid",
             "type": "string",
-            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+            "$ref": "#/$defs/uuidRegex"
         }
     }
 }

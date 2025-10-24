@@ -7,19 +7,27 @@
             "devices": {
                 "living_room_tv": {
                     "name": "Living Room TV",
-                    "deviceId": "123e4567-e89b-12d3-a456-426614174000",
-                    "file": "/devices/sony_tv.json"
+                    "deviceId": {
+                        "uuid": "123e4567-e89b-12d3-a456-426614174200",
+                        "file": "/testing"
+                    }
+                },
+                "soundbar": {
+                    "name": "Living Room Soundbar",
+                    "deviceId": "123e4567-e89b-12d3-a456-426614174200"
                 }
             },
             "controllers": {
                 "main_controller": {
                     "name": "Main Controller",
-                    "deviceId": "123e4567-e89b-12d3-a456-426614174001",
-                    "file": "/controllers/main_controller.json"
+                    "deviceId": "123e4567-e89b-12d3-a456-426614174200",
+                    "programs": {
+                        "TESTING!":{}
+                    }
                 },
                 "remote": {
-                    "name": "Remote Controller",
-                    "deviceId": "123e4567-e89b-12d3-a456-426614174002"
+                    "name": "dd",
+                    "deviceId": "123e4567-e89b-12d3-a456-426614174200"
                 }
             }
         }
