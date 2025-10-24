@@ -5,16 +5,117 @@
     "description": "JSON schema for a program file used by the OpenRemote system.",
     "type": "object",
     "$defs": {
-        "string_id":{
+        "string_id": {
+            "$comment": "this is used to identify devices and controlls across the program.",
             "type": "string",
             "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_]+$",
             "description": "A string identifier.",
             "examples": [
                 "device123",
-                "room456"
+                "Room_456"
             ]
         },
-
+        "programs": {
+            "type": "object",
+            "patternProperties": {
+                "^[a-zA-Z0-9][a-zA-Z0-9_]+$": {
+                    "type": "object",
+                    "description": "A program assigned to this controller.",
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "description": "The name of the program.",
+                            "examples": [
+                                "Power on",
+                                "Volume up"
+                            ]
+                        },
+                        "code": {
+                            "type": "array",
+                            "description": "The code this program contains.",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "required": [
+                        "code"
+                    ],
+                    "additionalProperties": false
+                }
+            },
+            "additionalProperties": false
+        },
+        "stateMachines": {
+            "type": "object",
+            "patternProperties": {
+                "^[a-zA-Z0-9][a-zA-Z0-9_]+$": {
+                    "type": "object",
+                    "description": "A state machine assigned to this controller.",
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "description": "The name of the state machine."
+                        },
+                        "isSequential": {
+                            "type": "boolean",
+                            "description": "Indicates if the state machine is sequential."
+                        },
+                        "states": {
+                            "type": "array",
+                            "description": "The states this state machine contains.",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "id":{
+                                        "$ref": "#/$defs/string_id"
+                                    },
+                                    "onEnter":{
+                                        "type":"string",
+                                        "description":"A program ID, or other action that will be executed when entering this state.",
+                                        "$comment":"TODO: This should contain a regex for a program ID or other object ID."
+                                    },
+                                    "onExit":{
+                                        "type":"string",
+                                        "description":"A program ID, or other action that will be executed when exiting this state.",
+                                        "$comment":"TODO: This should contain a regex for a program ID or other object ID."
+                                    }
+                                },
+                                "required": [
+                                    "id"
+                                ]
+                            }
+                        }
+                    },
+                    "required": [
+                        "states"
+                    ],
+                    "additionalProperties": false
+                }
+            },
+            "additionalProperties": false
+        },
+        "deviceDefLink": {
+            "$comment": "This allows either a straight up GUID to be used, or optionally a file pointer hint, and GUID.",
+            "type": [
+                "string",
+                "object"
+            ],
+            "description": "Either a string identifier or a full device definition object.",
+            "$ref": "shared.schema.json#uuidRegex",
+            "properties": {
+                "uuid": {
+                    "$ref": "shared.schema.json#uuid"
+                },
+                "file": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "uuid",
+                "file"
+            ]
+        },
         "device": {
             "type": "object",
             "properties": {
@@ -26,12 +127,8 @@
                         "Soundbar"
                     ]
                 },
-                "id": {
-                    "$ref": "#/$defs/string_id",
-                    "description": "The string identifier for the device."
-                },
                 "deviceId": {
-                    "$ref": "shared.schema.json#uuid",
+                    "$ref": "#/$defs/deviceDefLink",
                     "description": "The unique identifier for the device."
                 },
                 "file": {
@@ -42,28 +139,73 @@
                     ]
                 }
             },
-            "required": ["name", "id", "deviceId"]
+            "required": [
+                "name",
+                "deviceId"
+            ]
         },
-        
-        "room": {
+        "devices": {
+            "type": "object",
+            "patternProperties": {
+                "^[a-zA-Z0-9][a-zA-Z0-9_]+$": {
+                    "$ref": "#/$defs/device"
+                }
+            },
+            "additionalProperties": false
+        },
+        "controller": {
+            "$comment": "This is the schema that defines a device responsible for controlling other devices in the room.",
             "type": "object",
             "properties": {
                 "name": {
                     "type": "string",
-                    "description": "The name of the room.",
+                    "description": "The name (usually human readable) assigned to the controller.",
                     "examples": [
-                        "Living Room",
-                        "Kitchen"
+                        "Main Controller",
+                        "Secondary Controller"
                     ]
                 },
-                "devices": {
-                    "type": "array",
-                    "description": "An array of devices located in the room.",
-                    "items": {
-                        "$ref": "#/$defs/device"
-                    }
+                "deviceId": {
+                    "$ref": "#/$defs/deviceDefLink",
+                    "description": "The unique identifier for the device."
+                },
+                "required": [
+                    "name",
+                    "deviceId"
+                ],
+                "additionalProperties": false
+            },
+            "required": [
+                "devices",
+                "controllers"
+            ]
+        },
+        "controllers": {
+            "type": "object",
+            "patternProperties": {
+                "^[a-zA-Z0-9][a-zA-Z0-9_]+$": {
+                    "$ref": "#/$defs/device"
                 }
-            }
+            },
+            "additionalProperties": false
+        },
+        "room": {
+            "type": "object",
+            "properties": {
+                "devices": {
+                    "$ref": "#/$defs/devices"
+                },
+                "controllers": {
+                    "$ref": "#/$defs/controllers"
+                },
+                "programs": {
+                    "$ref": "#/$defs/programs"
+                },
+                "stateMachines": {
+                    "$ref": "#/$defs/stateMachines"
+                }
+            },
+            "additionalProperties": false
         }
     },
     "properties": {
@@ -75,20 +217,25 @@
                 "John's summer house"
             ]
         },
-
         "version": {
             "description": "The version of the program being used.",
             "type": "integer",
+            "minimum": 1,
+            "$comment": "Increment this when the next version comes out.",
+            "maximum": 2,
             "examples": [
                 1
             ]
         },
         "rooms": {
             "description": "An array of room objects within the project.",
-            "type": "array",
-            "items": {
-                "$ref": "#/$defs/room"
-            }
+            "type": "object",
+            "patternProperties": {
+                "^[A-Za-z][A-Za-z0-9_]+$": {
+                    "$ref": "#/$defs/room"
+                }
+            },
+            "additionalProperties": false
         }
     }
 }

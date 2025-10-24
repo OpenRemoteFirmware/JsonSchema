@@ -2,29 +2,58 @@
     "$schema": "../program.schema.json",
     "version": 1,
     "projectName": "My Test Project",
-    
-    "rooms": [
-        {
-            "name": "Living Room",
-            "devices": [
-                {
-                    "name": "TV",
-                    "id": "tv",
-                    "deviceId": "550e8400-e29b-41d4-a716-446655440000"
+    "rooms": {
+        "LivingRoom": {
+            "devices": {
+                "living_room_tv": {
+                    "name": "Living Room TV",
+                    "deviceId": {
+                        "uuid": "123e4567-e89b-12d3-a456-426614174200",
+                        "file": "/testing"
+                    }
                 },
-                {
-                    "name": "Receiver",
-                    "id": "22323",
-                    "deviceId": "550e8400-e29b-41d4-a716-446655440001",
-                    "file": "/configs/receiver.json"
+                "soundbar": {
+                    "name": "Living Room Soundbar",
+                    "deviceId": "123e4567-e89b-12d3-a456-426614174200"
                 }
-            ]
-        },
-        {
-            "name": "Kitchen",
-            "devices": [
-
-            ]
+            },
+            "controllers": {
+                "main_controller": {
+                    "name": "Main Controller",
+                    "deviceId": "123e4567-e89b-12d3-a456-426614174200",
+                    "programs": {
+                        "TESTING!": {}
+                    }
+                },
+                "remote": {
+                    "name": "dd",
+                    "deviceId": "123e4567-e89b-12d3-a456-426614174200"
+                }
+            },
+            "programs": {
+                "TESTING": {
+                    "code": [
+                        "SEND TV::POWER_TOGGLE",
+                        "WAIT 2",
+                        "SEND SOUNDBAR::VOLUME_UP"
+                    ]
+                }
+            },
+            "stateMachines": {
+                "livingroomTvPower": {
+                    "name": "Just a test state machine",
+                    "states": [
+                        {
+                            "id": "ON",
+                            "onEnter": "TESTING"
+                        },
+                        {
+                            "id": "OFF",
+                            "onEnter": "TESTING"
+                        }
+                    ]
+                }
+            }
         }
-    ]
+    }
 }
