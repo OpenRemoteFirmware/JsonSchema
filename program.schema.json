@@ -31,12 +31,64 @@
                             ]
                         },
                         "code": {
-                            "type": "string",
-                            "description": "The code this program contains."
+                            "type": "array",
+                            "description": "The code this program contains.",
+                            "items": {
+                                "type": "string"
+                            }
                         }
                     },
                     "required": [
                         "code"
+                    ],
+                    "additionalProperties": false
+                }
+            },
+            "additionalProperties": false
+        },
+        "stateMachines": {
+            "type": "object",
+            "patternProperties": {
+                "^[a-zA-Z0-9][a-zA-Z0-9_]+$": {
+                    "type": "object",
+                    "description": "A state machine assigned to this controller.",
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "description": "The name of the state machine."
+                        },
+                        "isSequential": {
+                            "type": "boolean",
+                            "description": "Indicates if the state machine is sequential."
+                        },
+                        "states": {
+                            "type": "array",
+                            "description": "The states this state machine contains.",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "id":{
+                                        "$ref": "#/$defs/string_id"
+                                    },
+                                    "onEnter":{
+                                        "type":"string",
+                                        "description":"A program ID, or other action that will be executed when entering this state.",
+                                        "$comment":"TODO: This should contain a regex for a program ID or other object ID."
+                                    },
+                                    "onExit":{
+                                        "type":"string",
+                                        "description":"A program ID, or other action that will be executed when exiting this state.",
+                                        "$comment":"TODO: This should contain a regex for a program ID or other object ID."
+                                    }
+                                },
+                                "required": [
+                                    "id"
+                                ]
+                            }
+                        }
+                    },
+                    "required": [
+                        "states"
                     ],
                     "additionalProperties": false
                 }
@@ -148,6 +200,9 @@
                 },
                 "programs": {
                     "$ref": "#/$defs/programs"
+                },
+                "stateMachines": {
+                    "$ref": "#/$defs/stateMachines"
                 }
             },
             "additionalProperties": false

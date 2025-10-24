@@ -22,12 +22,36 @@
                     "name": "Main Controller",
                     "deviceId": "123e4567-e89b-12d3-a456-426614174200",
                     "programs": {
-                        "TESTING!":{}
+                        "TESTING!": {}
                     }
                 },
                 "remote": {
                     "name": "dd",
                     "deviceId": "123e4567-e89b-12d3-a456-426614174200"
+                }
+            },
+            "programs": {
+                "TESTING": {
+                    "code": [
+                        "SEND TV::POWER_TOGGLE",
+                        "WAIT 2",
+                        "SEND SOUNDBAR::VOLUME_UP"
+                    ]
+                }
+            },
+            "stateMachines": {
+                "livingroomTvPower": {
+                    "name": "Just a test state machine",
+                    "states": [
+                        {
+                            "id": "ON",
+                            "onEnter": "TESTING"
+                        },
+                        {
+                            "id": "OFF",
+                            "onEnter": "TESTING"
+                        }
+                    ]
                 }
             }
         }
