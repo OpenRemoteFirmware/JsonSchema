@@ -6,11 +6,17 @@
   "model": "XBR-55A8H",
   "vendor": "Sony",
   "deviceCategory": "Display",
+  "inputs": {
+    "hdmi": 4
+  },
+  "cec": {
+    "vendorId": "0x080046"
+  },
   "actions": {
     "POWER_ON": {
       "PRONTO": "0000 0AF1 0010 0010 0010 0020"
-    }
-  },
-  "POWER_OFF": {
+    },
+     "POWER_OFF": {}
   }
+ 
 }

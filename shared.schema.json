@@ -4,6 +4,26 @@
     "title": "OpenRemote shared json schema",
     "description": "JSON schema for a device that can be controlled by the OpenRemote system.",
     "$defs": {
+        "hex8Regex": {
+            "description": "A regex for matching a hexadecimal byte value.",
+            "$anchor": "hex8Regex",
+            "pattern": "^0x[0-9a-fA-F]{2}$"
+        },
+        "hex16Regex": {
+            "description": "A regex for matching a hexadecimal word value.",
+            "$anchor": "hex16Regex",
+            "pattern": "^0x[0-9a-fA-F]{4}$"
+        },
+        "hex24Regex": {
+            "description": "A regex for matching a 24-bit hexadecimal value.",
+            "$anchor": "hex24Regex",
+            "pattern": "^0x[0-9a-fA-F]{6}$"
+        },
+        "hex32Regex": {
+            "description": "A regex for matching a hexadecimal dword value.",
+            "$anchor": "hex32Regex",
+            "pattern": "^0x[0-9a-fA-F]{8}$"
+        },
         "uuidRegex": {
             "$anchor": "uuidRegex",
             "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
@@ -12,6 +32,28 @@
             "$anchor": "uuid",
             "type": "string",
             "$ref": "#/$defs/uuidRegex"
+        },
+        "hex24PosNum": {
+            "description": "A positive hexadecimal 24-bit value expressed as either an integer or a string in hex format.",
+            "$anchor": "hex24PosNum",
+            "type": [
+                "integer",
+                "string"
+            ],
+            "minimum": 0,
+            "maximum": 16777215,
+            "$ref": "#/$defs/hex24Regex"
+        },
+        "hex32PosNum": {
+            "description": "A positive hexadecimal dword value expressed as either an integer or a string in hex format.",
+            "$anchor": "hex32PosNum",
+            "type": [
+                "integer",
+                "string"
+            ],
+            "minimum": 0,
+            "maximum": 4294967295,
+            "$ref": "#/$defs/hex32Regex"
         }
     }
 }

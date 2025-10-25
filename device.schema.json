@@ -1,49 +1,36 @@
 {
     "$schema": "https://json-schema.org/draft-07/schema",
-    "$id": "https://example.com/product.schema.json",
+    "$id": "device.schema.json",
     "title": "OpenRemote Device schema",
     "description": "JSON schema for a device that can be controlled by the OpenRemote system.",
     "type": "object",
     "$defs": {
-        "uuid": {
-            "type": "string",
-            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        "ioPort": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
         },
-        "irCommand": {
+        "ioPortsGroup": {
             "type": "object",
-            "description": "Defines an IR command that can be transmitted",
-            "oneOf": [
-                {
-                    "properties": {
-                        "NEC": {
-                            "type": "string",
-                            "pattern": "^[0-9A-F]+$"
-                        }
-                    }
-                },
-                {
-                    "properties": {
-                        "PRONTO": {
-                            "type": "string",
-                            "pattern": "^[0-9A-F ]+$"
-                        }
-                    }
+            "properties": {
+                "hdmi": {
+                    "$ref": "#/$defs/ioPort"
                 }
-            ],
-            "required": [
-                "type",
-                "code"
-            ]
+            },
+            "additionalProperties": false
         }
     },
     "properties": {
+        "$schema": {
+            "type": "string"
+        },
         "id": {
             "description": "The unique identifier for this device. This is used to identify the device within the OpenRemote system.",
-            "$ref": "#/$defs/uuid"
+            "$ref": "shared.schema.json#uuid"
         },
         "parent": {
             "description": "The unique identifier for the parent device of this device, if applicable.",
-            "$ref": "#/$defs/uuid"
+            "$ref": "shared.schema.json#uuid"
         },
         "name": {
             "description": "Human readable name for this device.",
@@ -78,14 +65,36 @@
             "enum": [
                 "Base",
                 "Display",
+                "TV",
                 "Audio",
                 "Receiver",
                 "SmartDevice",
                 "Sensor",
                 "Player",
+                "MediaBox",
                 "Light",
                 "Other"
             ]
+        },
+        "cec": {
+            "type": "object",
+            "description": "CEC configuration for this device.",
+            "properties": {
+                "vendorId": {
+                    "type": [
+                        "integer",
+                        "string"
+                    ],
+                    "description": "The CEC vendor ID for this device.",
+                    "$ref": "shared.schema.json#hex24PosNum"
+                }
+            }
+        },
+        "inputs": {
+            "$ref": "#/$defs/ioPortsGroup"
+        },
+        "outputs": {
+            "$ref": "#/$defs/ioPortsGroup"
         },
         "actions": {
             "type": "object",
@@ -108,6 +117,27 @@
                             "required": [
                                 "PRONTO"
                             ]
+                        },
+                        {
+                            "not": {
+                                "anyOf": [
+                                    {
+                                        "required": [
+                                            "NEC"
+                                        ]
+                                    },
+                                    {
+                                        "required": [
+                                            "NEC2"
+                                        ]
+                                    },
+                                    {
+                                        "required": [
+                                            "PRONTO"
+                                        ]
+                                    }
+                                ]
+                            }
                         }
                     ],
                     "properties": {
@@ -133,5 +163,6 @@
     "required": [
         "id",
         "name"
-    ]
+    ],
+    "additionalProperties": false
 }

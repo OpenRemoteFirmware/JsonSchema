@@ -6,7 +6,7 @@
     "type": "object",
     "$defs": {
         "string_id": {
-            "$comment": "this is used to identify devices and controlls across the program.",
+            "$comment": "this is used to identify devices and controls across the program.",
             "type": "string",
             "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_]+$",
             "description": "A string identifier.",
